@@ -360,6 +360,11 @@
             position: sticky;
             top: 20px;
         }
+    
+        @media(min-width:1025px){.var-card{box-shadow:0 6px 16px rgba(0,0,0,.14)}}
+        .file-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.file-row span{font-size:13px;color:var(--mut)}
+        .wysiwyg.sm{min-height:90px}
+            .wysiwyg a{color:var(--blue);}
     </style>
 </head>
 <body>
@@ -385,7 +390,7 @@
                 <h2 data-i="h_msg">Contenido del Correo</h2>
                 
                 <label for="salutation" data-i="l_salut">Saludo inicial</label>
-                <input id="salutation" value="Estimado cliente,">
+                <input id="salutation" data-v value="Estimado cliente,">
 
                 <label for="editor" data-i="l_body">Cuerpo Principal (Soporta HTML / Formato)</label>
                 <div class="editor-toolbar">
@@ -394,37 +399,12 @@
                     <button class="editor-btn" type="button" onclick="execCmd('insertUnorderedList')" title="Lista">• Lista</button>
                     <button class="editor-btn" type="button" onclick="execCmd('createLink', prompt('URL:','https://'))" title="Enlace">🔗 Link</button>
                 </div>
-                <div id="editor" class="wysiwyg" contenteditable="true">
+                <div id="editor" class="wysiwyg" contenteditable="true" data-v>
                     <p>Bienvenido a su servicio de <strong>net2phone</strong>. Mi nombre es <strong>{{{Sender.Name}}}</strong>, Ingeniero PM encargado de brindarle seguimiento a la adición de extensiones a su cuenta.</p>
-                    <p>El motivo de este correo es dar seguimiento a la configuración de extensión adicional para la cuenta <strong>{{{Onboarding_Flow__c.Account_Name__c}}}</strong>, garantizando que sea estructurada según sus necesidades requeridas. Adjunto encontrará el formato de aprovisionamiento donde deberá registrar los datos de cada usuario.</p>
+                    <p>El motivo de este correo es dar seguimiento a la configuración de extensión adicional para la cuenta <strong>{{{Onboarding_Flow__c.Account_Name__c}}}</strong>, garantizando que sea estructurada según sus necesidades requeridas. Adjunto encontrará el formato de aprovisionamiento donde deberá registrar el nombre, número de extensión y correo electrónico de cada usuario a crear.</p>
                 </div>
 
-                <!-- Salesforce Variable Inserter -->
-                <label data-i="l_sf_vars">Insertar Variable de Salesforce (en cursor)</label>
-                <div style="display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;">
-                    <select id="var_select" style="flex:1; min-width: 200px;">
-                        <option value="Sender.Name">Nombre Remitente ({{{Sender.Name}}})</option>
-                        <option value="Sender.Email">Email Remitente ({{{Sender.Email}}})</option>
-                        <option value="Sender.Phone">Teléfono Remitente ({{{Sender.Phone}}})</option>
-                        <option value="Contact.FirstName">Nombre Contacto ({{{Contact.FirstName}}})</option>
-                        <option value="Recipient.Name">Nombre Destinatario ({{{Recipient.Name}}})</option>
-                        <option value="Recipient.Email">Email Destinatario ({{{Recipient.Email}}})</option>
-                        <option value="Onboarding_Flow__c.Project_Manager_Name__c">PM Asignado ({{{Onboarding_Flow__c.Project_Manager_Name__c}}})</option>
-                        <option value="Onboarding_Flow__c.Seats__c">Licencias / Seats ({{{Onboarding_Flow__c.Seats__c}}})</option>
-                        <option value="Onboarding_Flow__c.DIDs_Notes__c">Notas de DIDs ({{{Onboarding_Flow__c.DIDs_Notes__c}}})</option>
-                        <option value="Onboarding_Flow__c.Ticket_Number__c">Nº Ticket Onboarding ({{{Onboarding_Flow__c.Ticket_Number__c}}})</option>
-                        <option value="Onboarding_Flow__c.Account_Name__c">Nombre Cuenta ({{{Onboarding_Flow__c.Account_Name__c}}})</option>
-                        <option value="Case.CaseNumber">Nº Ticket / Caso ({{{Case.CaseNumber}}})</option>
-                        <option value="Case.Type">Tipo de Ticket ({{{Case.Type}}})</option>
-                        <option value="Case.Subject">Asunto del Ticket ({{{Case.Subject}}})</option>
-                        <option value="Case.Description">Descripción del Ticket ({{{Case.Description}}})</option>
-                    </select>
-                    <button class="btn-add" type="button" onclick="insertSelectedVar()" data-i="btn_ins_var">+ Insertar</button>
-                </div>
-                <div style="display:flex; gap: 6px;">
-                    <input id="custom_var" data-ph="ph_custom_var" placeholder="Variable personalizada (ej. Custom_Field__c)">
-                    <button class="btn-add" type="button" onclick="insertCustomVar()" data-i="btn_ins_custom">+ Insertar</button>
-                </div>
+                            <div data-varbar data-open></div>
             </div>
 
             <!-- Card 2: Nota Importante (Callout Box) -->
@@ -438,11 +418,12 @@
                 </h2>
                 <div id="callout_controls">
                     <label for="callout_title" data-i="l_callout_title">Título de la Nota</label>
-                    <input id="callout_title" value="Nota importante:">
+                    <input id="callout_title" data-v value="Nota importante:">
 
                     <label for="callout_text" data-i="l_callout_text">Texto de la Nota</label>
-                    <textarea id="callout_text" rows="2">Se recomienda que cada usuario cuente con correo electrónico corporativo individual para acceder a las aplicaciones nativas de net2phone (de lo contrario, deberán utilizarse aplicaciones de terceros).</textarea>
+                    <textarea id="callout_text" data-v rows="2">Se recomienda que cada usuario cuente con correo electrónico corporativo individual para acceder a las aplicaciones nativas de net2phone (de lo contrario, deberán utilizarse aplicaciones de terceros).</textarea>
                 </div>
+            <div data-varbar ></div>
             </div>
 
             <!-- Card 3: Generador de Tablas (CSV / Config manual) -->
@@ -458,6 +439,16 @@
                 </h2>
 
                 <div id="table_body_section">
+                    <label for="table_intro" data-i="l_tbl_intro">Texto previo a la tabla</label>
+                    <div class="editor-toolbar">
+                    <button class="editor-btn" type="button" onclick="execCmd('bold')" title="Negrita"><b>B</b></button>
+                    <button class="editor-btn" type="button" onclick="execCmd('italic')" title="Cursiva"><i>I</i></button>
+                    <button class="editor-btn" type="button" onclick="execCmd('insertUnorderedList')" title="Lista">• Lista</button>
+                    <button class="editor-btn" type="button" onclick="execCmd('createLink', prompt('URL:','https://'))" title="Enlace">🔗 Link</button>
+                </div>
+                    <div id="table_intro" class="wysiwyg sm" contenteditable="true" data-v></div>
+                    <div data-varbar></div>
+                    <div style="height:14px"></div>
                     <div style="display:flex; gap: 10px; margin-bottom: 12px; border-bottom: 1px solid var(--line); padding-bottom: 6px;">
                         <button class="tab-btn active" id="tab_btn_manual" type="button" onclick="switchTableTab('manual')" data-i="tab_manual">Configuración Manual</button>
                         <button class="tab-btn" id="tab_btn_csv" type="button" onclick="switchTableTab('csv')" data-i="tab_csv">Cargar desde CSV</button>
@@ -481,7 +472,11 @@
                     <!-- CSV Table Builder -->
                     <div id="table_csv_sec" style="display: none;">
                         <label for="csv_file" data-i="l_csv_file">Seleccionar archivo CSV</label>
-                        <input id="csv_file" type="file" accept=".csv, .txt" onchange="handleCSVFile(this)">
+                        <input id="csv_file" type="file" accept=".csv, .txt" onchange="handleCSVFile(this)" hidden>
+                        <div class="file-row">
+                            <button class="btn-add" type="button" onclick="document.getElementById('csv_file').click()" data-i="btn_choose">Seleccionar archivo</button>
+                            <span id="csv_fname" data-i="no_file">Ningún archivo seleccionado</span>
+                        </div>
                         
                         <div class="two-col" style="margin-top: 8px;">
                             <div>
@@ -497,29 +492,55 @@
                 </div>
             </div>
 
+            <div class="card">
+                <h2 data-i="h_closing">Cuerpo de Despedida</h2>
+                <label for="closing_editor" data-i="l_closing">Mensaje de cierre (admite variables y formato)</label>
+                <div class="editor-toolbar">
+                    <button class="editor-btn" type="button" onclick="execCmd('bold')" title="Negrita"><b>B</b></button>
+                    <button class="editor-btn" type="button" onclick="execCmd('italic')" title="Cursiva"><i>I</i></button>
+                    <button class="editor-btn" type="button" onclick="execCmd('insertUnorderedList')" title="Lista">• Lista</button>
+                    <button class="editor-btn" type="button" onclick="execCmd('createLink', prompt('URL:','https://'))" title="Enlace">🔗 Link</button>
+                </div>
+                <div id="closing_editor" class="wysiwyg sm" contenteditable="true" data-v></div>
+            <div data-varbar ></div>
+            </div>
+
             <!-- Card 4: Pie de Página y Firma -->
             <div class="card">
                 <h2 data-i="h_footer">Pie de Página & Referencia</h2>
 
                 <label for="footer_sender_name" data-i="l_sender_name">Nombre de Remitente (Firma)</label>
-                <input id="footer_sender_name" value="{{{Sender.Name}}}">
+                <input id="footer_sender_name" data-v value="{{{Sender.Name}}}">
 
                 <label for="footer_sender_title" data-i="l_sender_title">Cargo / Departamento</label>
-                <input id="footer_sender_title" value="Equipo Setup Unlimited">
+                <input id="footer_sender_title" data-v value="Equipo Setup Unlimited">
 
                 <div class="two-col">
                     <div>
                         <label for="footer_phone" data-i="l_phone">Teléfono asociado al ícono</label>
-                        <input id="footer_phone" value="54-11-53659050">
+                        <input id="footer_phone" data-v value="54-11-53659050">
                     </div>
                     <div>
                         <label for="footer_email" data-i="l_email">Correo asociado al ícono</label>
-                        <input id="footer_email" value="setupunlimited@idt.net">
+                        <input id="footer_email" data-v value="setupunlimited@idt.net">
                     </div>
                 </div>
 
+                <div class="two-col">
+                    <div>
+                        <label for="cta_text" data-i="l_cta_text">Texto del botón</label>
+                        <input id="cta_text" data-v value="Conocer más">
+                    </div>
+                    <div>
+                        <label for="cta_link" data-i="l_cta_link">Enlace del botón</label>
+                        <input id="cta_link" value="https://www.net2phone.com">
+                    </div>
+                </div>
+                <div class="note-box" data-i="n_empty">Si dejás vacío el teléfono, el correo o el texto del botón, ese elemento no se muestra en el correo.</div>
+
                 <label for="footer_ref" data-i="l_ref">Variable / Código de Referencia Final</label>
-                <input id="footer_ref" value="Ref: {{{Onboarding_Flow__c.Ticket_Number__c}}}">
+                <input id="footer_ref" data-v value="Ref: {{{Onboarding_Flow__c.Ticket_Number__c}}}">
+            <div data-varbar ></div>
             </div>
         </section>
 
@@ -544,6 +565,36 @@
         <span data-i="rights">© 2026 net2phone. Todos los derechos reservados.</span><br>
         <b>César Boronat</b>
     </footer>
+
+<template id="varbar_tpl">
+<details class="varbar" style="margin-top:14px;">
+  <summary style="cursor:pointer;font-size:12px;font-weight:700;color:var(--mut);margin-bottom:8px;" data-i="l_sf_vars">Insertar variable de Salesforce (en el cursor)</summary>
+  <div style="display:flex;gap:8px;margin:8px 0;flex-wrap:wrap;">
+    <select class="vsel" style="flex:1;min-width:200px;">
+                        <option value="Sender.Name">Nombre Remitente ({{{Sender.Name}}})</option>
+                        <option value="Sender.Email">Email Remitente ({{{Sender.Email}}})</option>
+                        <option value="Sender.Phone">Teléfono Remitente ({{{Sender.Phone}}})</option>
+                        <option value="Contact.FirstName">Nombre Contacto ({{{Contact.FirstName}}})</option>
+                        <option value="Recipient.Name">Nombre Destinatario ({{{Recipient.Name}}})</option>
+                        <option value="Recipient.Email">Email Destinatario ({{{Recipient.Email}}})</option>
+                        <option value="Onboarding_Flow__c.Project_Manager_Name__c">PM Asignado ({{{Onboarding_Flow__c.Project_Manager_Name__c}}})</option>
+                        <option value="Onboarding_Flow__c.Seats__c">Licencias / Seats ({{{Onboarding_Flow__c.Seats__c}}})</option>
+                        <option value="Onboarding_Flow__c.DIDs_Notes__c">Notas de DIDs ({{{Onboarding_Flow__c.DIDs_Notes__c}}})</option>
+                        <option value="Onboarding_Flow__c.Ticket_Number__c">Nº Ticket Onboarding ({{{Onboarding_Flow__c.Ticket_Number__c}}})</option>
+                        <option value="Onboarding_Flow__c.Account_Name__c">Nombre Cuenta ({{{Onboarding_Flow__c.Account_Name__c}}})</option>
+                        <option value="Case.CaseNumber">Nº Ticket / Caso ({{{Case.CaseNumber}}})</option>
+                        <option value="Case.Type">Tipo de Ticket ({{{Case.Type}}})</option>
+                        <option value="Case.Subject">Asunto del Ticket ({{{Case.Subject}}})</option>
+                        <option value="Case.Description">Descripción del Ticket ({{{Case.Description}}})</option>
+                    </select>
+    <button class="btn-add" type="button" data-act="sel" data-i="btn_ins_var">+ Insertar</button>
+  </div>
+  <div style="display:flex;gap:6px;">
+    <input class="vcus" data-ph="ph_custom_var" placeholder="Variable personalizada (ej. Custom_Field__c)">
+    <button class="btn-add" type="button" data-act="cus" data-i="btn_ins_custom">+ Personalizada</button>
+  </div>
+</details>
+</template>
 
     <script>
         let currentLang = "es";
@@ -594,6 +645,21 @@
                 h_prev: "Vista Previa en Tiempo Real",
                 btn_copy: "Copiar HTML",
                 rights: "© 2026 net2phone. Todos los derechos reservados.",
+                h_vars: "Variables de Salesforce",
+                l_target: "Se inserta en:",
+                h_closing: "Cuerpo de Despedida",
+                l_closing: "Mensaje de cierre (admite variables y formato)",
+                l_cta_text: "Texto del botón",
+                l_cta_link: "Enlace del botón",
+                def_cta: "Conocer más",
+                def_salut: "Estimado cliente,",
+                def_tbl_intro: "<p><strong>Estructura del Formato de Aprovisionamiento:</strong></p>",
+                l_tbl_intro: "Texto previo a la tabla",
+                def_closing: "<p>Las extensiones deben ser obligatoriamente de <strong>3, 4 o 5 dígitos</strong>. Si lo prefiere, podemos realizar una configuración genérica inicial y posteriormente usted podrá realizar los ajustes necesarios (a excepción de cambios en las extensiones asignadas).</p><p>Quedo atento a sus comentarios para avanzar con su requerimiento.</p><p>Saludos cordiales,</p>",
+                n_empty: "Si dejás vacío el teléfono, el correo o el texto del botón, ese elemento no se muestra en el correo.",
+                btn_choose: "Seleccionar archivo",
+                no_file: "Ningún archivo seleccionado",
+                l_headers: "Nombres de Encabezados",
                 copied: "✓ ¡HTML Copiado! Listo para usar",
                 fail: "Error al copiar. Copia manualmente."
             },
@@ -632,6 +698,21 @@
                 h_prev: "Pré-visualização em Tempo Real",
                 btn_copy: "Copiar HTML",
                 rights: "© 2026 net2phone. Todos os direitos reservados.",
+                h_vars: "Variáveis do Salesforce",
+                l_target: "Inserido em:",
+                h_closing: "Corpo de Despedida",
+                l_closing: "Mensagem de encerramento (aceita variáveis e formatação)",
+                l_cta_text: "Texto do botão",
+                l_cta_link: "Link do botão",
+                def_cta: "Saiba mais",
+                def_salut: "Prezado cliente,",
+                def_tbl_intro: "<p><strong>Estrutura do Formato de Provisionamento:</strong></p>",
+                l_tbl_intro: "Texto anterior à tabela",
+                def_closing: "<p>Os ramais devem ter obrigatoriamente <strong>3, 4 ou 5 dígitos</strong>. Se preferir, podemos realizar uma configuração genérica inicial e, posteriormente, você poderá fazer os ajustes necessários (exceto alterações nos ramais atribuídos).</p><p>Fico atento aos seus comentários para avançarmos com a sua solicitação.</p><p>Atenciosamente,</p>",
+                n_empty: "Se deixar vazio o telefone, o e-mail ou o texto do botão, esse elemento não será exibido no e-mail.",
+                btn_choose: "Selecionar arquivo",
+                no_file: "Nenhum arquivo selecionado",
+                l_headers: "Nomes dos Cabeçalhos",
                 copied: "✓ HTML Copiado! Pronto para usar",
                 fail: "Erro ao copiar."
             },
@@ -670,10 +751,47 @@
                 h_prev: "Real-time Live Preview",
                 btn_copy: "Copy HTML",
                 rights: "© 2026 net2phone. All rights reserved.",
+                h_vars: "Salesforce Variables",
+                l_target: "Inserted into:",
+                h_closing: "Closing Message",
+                l_closing: "Closing message (supports variables and formatting)",
+                l_cta_text: "Button text",
+                l_cta_link: "Button link",
+                def_cta: "Learn more",
+                def_salut: "Dear customer,",
+                def_tbl_intro: "<p><strong>Provisioning Format Structure:</strong></p>",
+                l_tbl_intro: "Text before the table",
+                def_closing: "<p>Extensions must be <strong>3, 4 or 5 digits</strong> long. If you prefer, we can perform an initial generic setup and you can later make the necessary adjustments (except changes to the assigned extensions).</p><p>I look forward to your feedback so we can move forward with your request.</p><p>Kind regards,</p>",
+                n_empty: "If the phone, email or button text is left empty, that element won't appear in the email.",
+                btn_choose: "Select file",
+                no_file: "No file selected",
+                l_headers: "Header Names",
                 copied: "✓ HTML Copied! Ready to use",
                 fail: "Failed to copy."
             }
         };
+
+        
+        const PVIMG = (() => {
+            const sv = b => "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#740CE8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + b + '</svg>');
+            return {
+                logo: "data:image/png;base64,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",
+                banner: "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 240"><rect width="1200" height="240" fill="#002540"/><text x="600" y="128" fill="#8fa6b8" font-family="Arial" font-size="26" text-anchor="middle">Banner net2phone (se carga desde HubSpot al enviar)</text></svg>'),
+                mail: sv('<rect x="2.5" y="4.5" width="19" height="15" rx="3"/><path d="m3.5 7.5 8.5 6 8.5-6"/>'),
+                phone: sv('<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/>'),
+                web: sv('<circle cx="12" cy="12" r="9.5"/><path d="M2.5 12h19"/><path d="M12 2.5c2.7 2.6 4 5.8 4 9.5s-1.3 6.9-4 9.5c-2.7-2.6-4-5.8-4-9.5s1.3-6.9 4-9.5z"/>'),
+                li: sv('<circle cx="4.6" cy="4.8" r="1.1" fill="#740CE8"/><path d="M4.6 9.6V20M10.2 20V9.6M10.2 14.2a4.3 4.3 0 0 1 8.6 0V20"/>')
+            };
+        })();
+        // Solo para la vista previa: el HTML copiado conserva las URLs originales de HubSpot
+        function toPreview(h) {
+            const H = 'https://4423252.fs1.hubspotusercontent-na1.net/hubfs/4423252/', S = H + 'Email%20Signature%202026/';
+            return h.split(H + 'Logo%20net2phone_Gradiente-1.png').join(PVIMG.logo)
+                .split(S + 'Email%2c%20@.svg').join(PVIMG.mail).split(S + 'Group.png').join(PVIMG.phone)
+                .split(S + 'earth-globe-modern.svg').join(PVIMG.web).split(S + 'linkedin-line.png').join(PVIMG.li)
+                .replace(/<img src="(https:\/\/info\.net2phone\.com[^"]*)"/, (m, u) => `<img src="${u}" onerror="this.onerror=null;this.src='${PVIMG.banner}'"`);
+        }
+        function generateEmailHTML(preview) { const h = generateEmailHTMLRaw(); return preview ? toPreview(h) : h; }
 
         const t = key => I18N[currentLang][key] || key;
 
@@ -682,41 +800,81 @@
             updatePreview();
         }
 
-        function insertVariableIntoEditor(varName) {
-            const editor = document.getElementById('editor');
-            editor.focus();
-            const varFormatted = `{{{${varName}}}}`;
-            
-            const sel = window.getSelection();
-            if (sel.getRangeAt && sel.rangeCount) {
-                let range = sel.getRangeAt(0);
-                range.deleteContents();
-                const el = document.createElement("span");
-                el.innerHTML = varFormatted;
-                range.insertNode(el);
-                
-                range.setStartAfter(el);
-                range.setEndAfter(el);
-                sel.removeAllRanges();
-                sel.addRange(range);
+        const PASTE_OK = ['strong','b','em','i','u','ul','ol','li','p'];
+        const PASTE_BLOCK = ['div','h1','h2','h3','h4','h5','h6','blockquote','section','article','tr','table','tbody','thead'];
+        const escH = x => x.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        function cleanNode(n) {
+            if (n.nodeType === 3) return escH(n.nodeValue);
+            if (n.nodeType !== 1) return '';
+            const tag = n.tagName.toLowerCase();
+            if (['script','style','meta','title','head'].includes(tag)) return '';
+            const inner = [...n.childNodes].map(cleanNode).join('');
+            if (PASTE_OK.includes(tag)) return `<${tag}>${inner}</${tag}>`;
+            if (tag === 'br') return '<br>';
+            if (tag === 'a') { const h = n.getAttribute('href'); return h ? `<a href="${escH(h)}">${inner}</a>` : inner; }
+            if (PASTE_BLOCK.includes(tag)) return /<(p|ul|ol)>/.test(inner) ? inner : (inner.trim() ? `<p>${inner}</p>` : '');
+            return inner;
+        }
+        document.addEventListener('paste', e => {
+            const ed = e.target.closest && e.target.closest('.wysiwyg');
+            if (!ed) return;
+            e.preventDefault();
+            const html = e.clipboardData.getData('text/html'), txt = e.clipboardData.getData('text/plain');
+            let out;
+            if (html) out = cleanNode(new DOMParser().parseFromString(html, 'text/html').body);
+            else out = txt.split(/\r?\n/).map(l => escH(l)).filter(l => l.trim()).map(l => `<p>${l}</p>`).join('');
+            if (!html && !/\n/.test(txt.trim())) out = escH(txt);
+            document.execCommand('insertHTML', false, out);
+        });
+
+        let lastTarget = null, savedRange = null;
+        const norm = h => h.replace(/\s+/g, ' ').replace(/>\s+</g, '><').trim();
+        const ranges = new WeakMap();
+        document.addEventListener('focusin', e => {
+            const el = e.target.closest && e.target.closest('[data-v]');
+            if (el) { lastTarget = el;  }
+        });
+        document.addEventListener('selectionchange', () => {
+            const s = window.getSelection();
+            if (!s.rangeCount) return;
+            const n = s.anchorNode, p = n && (n.nodeType === 1 ? n : n.parentElement);
+            const ed = p && p.closest('[data-v][contenteditable]');
+            if (ed) { lastTarget = ed; ranges.set(ed, s.getRangeAt(0).cloneRange());  }
+        });
+
+        function insertVariableIntoEditor(varName, target) {
+            const txt = `{{{${varName}}}}`;
+            const el = target || lastTarget || document.getElementById('editor');
+            if (el.isContentEditable) {
+                el.focus();
+                const sel = window.getSelection();
+                const sr = ranges.get(el);
+                if (sr && el.contains(sr.commonAncestorContainer)) {
+                    sel.removeAllRanges(); sel.addRange(sr);
+                } else {
+                    const r = document.createRange(); r.selectNodeContents(el); r.collapse(false);
+                    sel.removeAllRanges(); sel.addRange(r);
+                }
+                document.execCommand('insertText', false, txt);
             } else {
-                editor.innerHTML += varFormatted;
+                const a = el.selectionStart ?? el.value.length, b = el.selectionEnd ?? a;
+                el.setRangeText(txt, a, b, 'end');
+                el.focus();
             }
             updatePreview();
         }
 
-        function insertSelectedVar() {
-            const val = document.getElementById('var_select').value;
-            insertVariableIntoEditor(val);
-        }
-
-        function insertCustomVar() {
-            const val = document.getElementById('custom_var').value.trim();
-            if (val) {
-                insertVariableIntoEditor(val);
-                document.getElementById('custom_var').value = "";
-            }
-        }
+        document.addEventListener('click', e => {
+            const b = e.target.closest('[data-act]');
+            if (!b) return;
+            const bar = b.closest('.varbar'), card = b.closest('.card');
+            let v;
+            if (b.dataset.act === 'sel') v = bar.querySelector('.vsel').value;
+            else { const i = bar.querySelector('.vcus'); v = i.value.trim().replace(/^\{+|\}+$/g, ''); i.value = ''; }
+            if (!v) return;
+            const tg = (lastTarget && card.contains(lastTarget)) ? lastTarget : (card.querySelector('[contenteditable][data-v]') || card.querySelector('[data-v]'));
+            insertVariableIntoEditor(v, tg);
+        });
 
         function toggleTableSection() {
             isTableEnabled = document.getElementById('table_enable').checked;
@@ -736,7 +894,7 @@
             const rows = parseInt(document.getElementById('tbl_rows').value) || 2;
             const container = document.getElementById('table_headers_container');
             
-            let html = '<label style="margin-top:10px;">Nombres de Encabezados</label><div class="two-col">';
+            let html = '<label style="margin-top:10px;">' + t('l_headers') + '</label><div class="two-col">';
             for (let i = 0; i < cols; i++) {
                 const defaultVal = tableData.headers[i] || `Columna ${i+1}`;
                 html += `<input id="tbl_h_${i}" value="${defaultVal}" oninput="syncManualTableData()">`;
@@ -774,6 +932,7 @@
         function handleCSVFile(input) {
             const file = input.files[0];
             if (!file) return;
+            const fn = document.getElementById('csv_fname'); fn.removeAttribute('data-i'); fn.textContent = file.name;
 
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -801,9 +960,11 @@
             }
         }
 
-        function generateEmailHTML() {
+        function fixP0(h) { return h.replace(/<p>/g, '<p style="color: #002540;">'); }
+
+        function generateEmailHTMLRaw() {
             const salutation = document.getElementById('salutation').value;
-            const bodyContent = document.getElementById('editor').innerHTML;
+            const bodyContent = fixP0(document.getElementById('editor').innerHTML);
             
             const isCallout = document.getElementById('callout_enable').checked;
             const calloutTitle = document.getElementById('callout_title').value;
@@ -814,6 +975,13 @@
             const phone = document.getElementById('footer_phone').value;
             const email = document.getElementById('footer_email').value;
             const refCode = document.getElementById('footer_ref').value;
+            const ctaText = document.getElementById('cta_text').value.trim();
+            const ctaLink = document.getElementById('cta_link').value.trim() || 'https://www.net2phone.com';
+            const fixP = h => h.replace(/<p>/g, '<p style="color: #002540;">');
+            const tIntro = document.getElementById('table_intro').innerHTML;
+            const tableIntro = tIntro.replace(/<[^>]*>|&nbsp;|\s/g, '') ? fixP(tIntro) : '';
+            const closingContent = fixP(document.getElementById('closing_editor').innerHTML);
+            const telHref = p => /\{\{\{/.test(p) ? p.trim() : p.replace(/[^\d+]/g, '');
 
             let tableHTML = '';
             if (isTableEnabled && tableData.headers.length > 0) {
@@ -843,7 +1011,7 @@
             }
 
             return `<!DOCTYPE html>
-<html lang="es">
+<html lang="${currentLang}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -878,17 +1046,17 @@
                                 <tr>
                                     <td style="padding: 15px 20px;">
                                         <p style="margin: 0; color: #435e72; font-size: 14px; line-height: 1.6; font-family: 'Open Sans', Arial, sans-serif;">
-                                            <strong>${calloutTitle}</strong>${calloutText}
+                                            <strong>${calloutTitle}</strong> ${calloutText}
                                         </p>
                                     </td>
                                 </tr>
                             </table>` : ''}
 
                             <!-- Tabla Estructurada -->
+                            ${isTableEnabled ? tableIntro : ''}
                             ${tableHTML}
 
-                            <p style="color: #002540;">Quedo atento a sus comentarios para avanzar con su requerimiento.</p>
-                            <p style="margin-bottom: 0; color: #002540;">Saludos cordiales,</p>
+                            <div style="color: #002540;">${closingContent}</div>
                         </td>
                     </tr>
 
@@ -913,16 +1081,16 @@
                             <!-- Iconos y Links Horizontales -->
                             <table cellpadding="0" cellspacing="0" border="0" align="center" style="margin: 0 auto 15px auto;">
                                 <tr>
-                                    <td style="padding: 0 10px; text-align: center;">
+                                    ${email.trim() ? `<td style="padding: 0 10px; text-align: center;">
                                         <a href="mailto:${email}" style="color: #ffffff; text-decoration: none; font-size: 12px; font-family: 'Open Sans', Arial, sans-serif;">
                                             <img src="https://4423252.fs1.hubspotusercontent-na1.net/hubfs/4423252/Email%20Signature%202026/Email%2c%20@.svg" alt="Email" width="16" style="vertical-align: middle; border: 0;">
                                         </a>
-                                    </td>
-                                    <td style="padding: 0 10px; text-align: center;">
-                                        <a href="tel:${phone.replace(/\D/g,'')}" style="color: #ffffff; text-decoration: none; font-size: 12px; font-family: 'Open Sans', Arial, sans-serif;">
+                                    </td>` : ''}
+                                    ${phone.trim() ? `<td style="padding: 0 10px; text-align: center;">
+                                        <a href="tel:${telHref(phone)}" style="color: #ffffff; text-decoration: none; font-size: 12px; font-family: 'Open Sans', Arial, sans-serif;">
                                             <img src="https://4423252.fs1.hubspotusercontent-na1.net/hubfs/4423252/Email%20Signature%202026/Group.png" alt="Phone" width="16" style="vertical-align: middle; border: 0;">
                                         </a>
-                                    </td>
+                                    </td>` : ''}
                                     <td style="padding: 0 10px; text-align: center;">
                                         <a href="https://www.net2phone.com" style="color: #ffffff; text-decoration: none; font-size: 12px; font-family: 'Open Sans', Arial, sans-serif;">
                                             <img src="https://4423252.fs1.hubspotusercontent-na1.net/hubfs/4423252/Email%20Signature%202026/earth-globe-modern.svg" alt="Website" width="16" style="vertical-align: middle; border: 0;">
@@ -936,13 +1104,13 @@
                                 </tr>
                             </table>
 
-                            <table cellpadding="0" cellspacing="0" border="0" align="center" style="margin: 0 auto 10px auto;">
+                            ${ctaText ? `<table cellpadding="0" cellspacing="0" border="0" align="center" style="margin: 0 auto 10px auto;">
                                 <tr>
                                     <td>
-                                        <a href="https://www.net2phone.com" style="color: #002540; text-decoration: none; font-size: 12px; font-weight: bold; white-space: nowrap; background-color: #ffffff; padding: 8px 20px; border-radius: 16px; display: inline-block; font-family: 'Open Sans', Arial, sans-serif;">Conocer más</a>
+                                        <a href="${ctaLink}" style="color: #002540; text-decoration: none; font-size: 12px; font-weight: bold; white-space: nowrap; background-color: #ffffff; padding: 8px 20px; border-radius: 16px; display: inline-block; font-family: 'Open Sans', Arial, sans-serif;">${ctaText}</a>
                                     </td>
                                 </tr>
-                            </table>
+                            </table>` : ''}
 
                             <p style="margin: 10px 0 0 0; font-size: 11px; color: #94a3b8; font-family: 'Open Sans', Arial, sans-serif;">
                                 ${refCode}
@@ -959,7 +1127,7 @@
         }
 
         function updatePreview() {
-            const html = generateEmailHTML();
+            const html = generateEmailHTML(true);
             const iframe = document.getElementById('preview_iframe');
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             doc.open();
@@ -1019,8 +1187,16 @@
             });
 
             // Defaults si no han sido modificados
-            document.getElementById('callout_title').value = t('def_callout_title');
-            document.getElementById('callout_text').value = t('def_callout_text');
+            [['callout_title','def_callout_title'],['callout_text','def_callout_text'],['salutation','def_salut'],['cta_text','def_cta']].forEach(([id,k]) => {
+                const el = document.getElementById(id), cur = el.value.trim();
+                if (Object.values(I18N).some(d => d[k].trim() === cur)) el.value = t(k);
+            });
+            [['closing_editor','def_closing'],['table_intro','def_tbl_intro']].forEach(([id,k]) => {
+                const ce = document.getElementById(id);
+                if (!ce.innerHTML.trim() || Object.values(I18N).some(d => norm(d[k]) === norm(ce.innerHTML))) ce.innerHTML = t(k);
+            });
+            document.documentElement.lang = lang;
+            
 
             document.querySelectorAll('#lang button').forEach(b => {
                 b.classList.toggle('on', b.getAttribute('data-l') === lang);
@@ -1038,9 +1214,21 @@
         }
 
         window.onload = function() {
+            document.execCommand('defaultParagraphSeparator', false, 'p');
+            document.getElementById('closing_editor').innerHTML = t('def_closing');
+            document.getElementById('table_intro').innerHTML = t('def_tbl_intro');
+            const vt = document.getElementById('varbar_tpl');
+            document.querySelectorAll('[data-varbar]').forEach(h => {
+                const n = vt.content.cloneNode(true);
+                if (h.hasAttribute('data-open')) n.querySelector('details').open = true;
+                h.replaceWith(n);
+            });
+            document.getElementById('table_intro').addEventListener('input', updatePreview);
+            lastTarget = document.getElementById('editor'); 
+            document.getElementById('closing_editor').addEventListener('input', updatePreview);
             buildManualTableInputs();
 
-            const inputs = ['salutation', 'callout_title', 'callout_text', 'callout_enable', 'footer_sender_name', 'footer_sender_title', 'footer_phone', 'footer_email', 'footer_ref'];
+            const inputs = ['salutation', 'callout_title', 'callout_text', 'callout_enable', 'footer_sender_name', 'footer_sender_title', 'footer_phone', 'footer_email', 'footer_ref', 'cta_text', 'cta_link'];
             inputs.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.addEventListener('input', updatePreview);
