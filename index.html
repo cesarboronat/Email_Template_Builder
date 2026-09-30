@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Email Template Builder | net2phone</title>
+    <style>
+        :root {
+            --navy: #002540;
+            --bg: #f4f7f9;
+            --card: #ffffff;
+            --txt: #002540;
+            --mut: #435e72;
+            --line: #c5cdd4;
+            --inp: #ffffff;
+            --purple: #740CE8;
+            --blue: #0095FF;
+            --pink: #FE0687;
+            box-sizing: border-box;
+            padding-top: env(safe-area-inset-top, 0px);
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root:not([data-theme="light"]) {
+                --bg: #0b1a26;
+                --card: #12283a;
+                --txt: #eaf1f6;
+                --mut: #a9bccb;
+                --line: #2a4358;
+                --inp: #0b1a26;
+            }
+        }
+
+        :root[data-theme="dark"] {
+            --bg: #0b1a26;
+            --card: #12283a;
+            --txt: #eaf1f6;
+            --mut: #a9bccb;
+            --line: #2a4358;
+            --inp: #0b1a26;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--txt);
+            font-family: Arial, Helvetica, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background: #002540;
+            padding: 18px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        header img {
+            height: 44px;
+            display: block;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 20px;
+            color: #fff;
+            font-weight: 700;
+            letter-spacing: .3px;
+            border-left: 1px solid #ffffff55;
+            padding-left: 16px;
+        }
+
+        main {
+            flex: 1;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
+            gap: 24px;
+            max-width: 1380px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        @media(max-width: 1024px) {
+            main {
+                grid-template-columns: 1fr;
+                padding: 16px;
+            }
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card:last-child {
+            margin-bottom: 0;
+        }
+
+        h2 {
+            font-size: 15px;
+            margin: 0 0 14px;
+            text-transform: uppercase;
+            letter-spacing: .6px;
+            color: var(--mut);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            margin: 12px 0 4px;
+            color: var(--mut);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            font-size: 14px;
+            background: var(--inp);
+            color: var(--txt);
+            font-family: inherit;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: 2px solid var(--blue);
+            border-color: transparent;
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .btn-add {
+            background: transparent;
+            border: 1px dashed var(--mut);
+            color: var(--txt);
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .btn-add:hover {
+            background: #0095ff18;
+            border-color: var(--blue);
+            color: var(--blue);
+        }
+
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--txt);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .toggle-switch input {
+            width: auto;
+            cursor: pointer;
+        }
+
+        .editor-toolbar {
+            display: flex;
+            gap: 6px;
+            background: var(--bg);
+            padding: 6px;
+            border: 1px solid var(--line);
+            border-bottom: 0;
+            border-radius: 8px 8px 0 0;
+            flex-wrap: wrap;
+        }
+
+        .editor-btn {
+            background: var(--card);
+            border: 1px solid var(--line);
+            color: var(--txt);
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .editor-btn:hover {
+            background: var(--purple);
+            color: #fff;
+            border-color: var(--purple);
+        }
+
+        .wysiwyg {
+            border: 1px solid var(--line);
+            border-radius: 0 0 8px 8px;
+            padding: 12px;
+            min-height: 180px;
+            background: var(--inp);
+            color: var(--txt);
+            outline: none;
+            overflow-y: auto;
+            line-height: 1.6;
+            font-size: 14px;
+            font-family: 'Open Sans', Arial, sans-serif;
+        }
+
+        .wysiwyg:focus {
+            outline: 2px solid var(--blue);
+        }
+
+        .stage-container {
+            background: #cbd5e1;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 20px;
+            overflow-x: auto;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .copy-btn {
+            margin-top: 16px;
+            width: 100%;
+            background: #002540;
+            color: #fff;
+            border: 0;
+            border-radius: 30px;
+            padding: 14px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .copy-btn:hover {
+            background: #0a3a5f;
+        }
+
+        .copy-btn.ok {
+            background: #0a8a4b;
+        }
+
+        .ctl {
+            margin-left: auto;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .seg {
+            display: flex;
+            border: 1px solid #ffffff55;
+            border-radius: 30px;
+            overflow: hidden;
+        }
+
+        .seg button {
+            background: transparent;
+            color: #fff;
+            border: 0;
+            padding: 7px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .seg button.on {
+            background: #fff;
+            color: #002540;
+        }
+
+        .tg {
+            background: transparent;
+            color: #fff;
+            border: 1px solid #ffffff55;
+            border-radius: 30px;
+            padding: 7px 14px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .tg:hover {
+            background: #ffffff22;
+        }
+
+        footer {
+            background: #002540;
+            color: #c9d6df;
+            text-align: center;
+            padding: 18px;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        footer b {
+            color: #fff;
+        }
+
+        .note-box {
+            background: rgba(0, 149, 255, 0.08);
+            border-left: 4px solid var(--blue);
+            padding: 10px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: var(--mut);
+            margin: 10px 0;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: 0;
+            border-bottom: 2px solid transparent;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-weight: 700;
+            color: var(--mut);
+            font-size: 13px;
+        }
+
+        .tab-btn.active {
+            color: var(--purple);
+            border-bottom-color: var(--purple);
+        }
+
+        .preview-card-sticky {
+            position: sticky;
+            top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="data:image/png;base64,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" alt="net2phone">
+        <h1 data-i="app_title">Email Template Builder</h1>
+        <div class="ctl">
+            <div class="seg" id="lang">
+                <button data-l="es" class="on" type="button">ES</button>
+                <button data-l="pt" type="button">PT</button>
+                <button data-l="en" type="button">EN</button>
+            </div>
+            <button class="tg" id="theme" type="button">☾ Oscuro</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- LEFT PANEL: EDITORS -->
+        <section>
+            <!-- Card 1: Mensaje General & Variables -->
+            <div class="card">
+                <h2 data-i="h_msg">Contenido del Correo</h2>
+                
+                <label for="salutation" data-i="l_salut">Saludo inicial</label>
+                <input id="salutation" value="Estimado cliente,">
+
+                <label for="editor" data-i="l_body">Cuerpo Principal (Soporta HTML / Formato)</label>
+                <div class="editor-toolbar">
+                    <button class="editor-btn" type="button" onclick="execCmd('bold')" title="Negrita"><b>B</b></button>
+                    <button class="editor-btn" type="button" onclick="execCmd('italic')" title="Cursiva"><i>I</i></button>
+                    <button class="editor-btn" type="button" onclick="execCmd('insertUnorderedList')" title="Lista">• Lista</button>
+                    <button class="editor-btn" type="button" onclick="execCmd('createLink', prompt('URL:','https://'))" title="Enlace">🔗 Link</button>
+                </div>
+                <div id="editor" class="wysiwyg" contenteditable="true">
+                    <p>Bienvenido a su servicio de <strong>net2phone</strong>. Mi nombre es <strong>{{{Sender.Name}}}</strong>, Ingeniero PM encargado de brindarle seguimiento a la adición de extensiones a su cuenta.</p>
+                    <p>El motivo de este correo es dar seguimiento a la configuración de extensión adicional para la cuenta <strong>{{{Onboarding_Flow__c.Account_Name__c}}}</strong>, garantizando que sea estructurada según sus necesidades requeridas. Adjunto encontrará el formato de aprovisionamiento donde deberá registrar los datos de cada usuario.</p>
+                </div>
+
+                <!-- Salesforce Variable Inserter -->
+                <label data-i="l_sf_vars">Insertar Variable de Salesforce (en cursor)</label>
+                <div style="display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;">
+                    <select id="var_select" style="flex:1; min-width: 200px;">
+                        <option value="Sender.Name">Nombre Remitente ({{{Sender.Name}}})</option>
+                        <option value="Sender.Email">Email Remitente ({{{Sender.Email}}})</option>
+                        <option value="Sender.Phone">Teléfono Remitente ({{{Sender.Phone}}})</option>
+                        <option value="Contact.FirstName">Nombre Contacto ({{{Contact.FirstName}}})</option>
+                        <option value="Recipient.Name">Nombre Destinatario ({{{Recipient.Name}}})</option>
+                        <option value="Recipient.Email">Email Destinatario ({{{Recipient.Email}}})</option>
+                        <option value="Onboarding_Flow__c.Project_Manager_Name__c">PM Asignado ({{{Onboarding_Flow__c.Project_Manager_Name__c}}})</option>
+                        <option value="Onboarding_Flow__c.Seats__c">Licencias / Seats ({{{Onboarding_Flow__c.Seats__c}}})</option>
+                        <option value="Onboarding_Flow__c.DIDs_Notes__c">Notas de DIDs ({{{Onboarding_Flow__c.DIDs_Notes__c}}})</option>
+                        <option value="Onboarding_Flow__c.Ticket_Number__c">Nº Ticket Onboarding ({{{Onboarding_Flow__c.Ticket_Number__c}}})</option>
+                        <option value="Onboarding_Flow__c.Account_Name__c">Nombre Cuenta ({{{Onboarding_Flow__c.Account_Name__c}}})</option>
+                        <option value="Case.CaseNumber">Nº Ticket / Caso ({{{Case.CaseNumber}}})</option>
+                        <option value="Case.Type">Tipo de Ticket ({{{Case.Type}}})</option>
+                        <option value="Case.Subject">Asunto del Ticket ({{{Case.Subject}}})</option>
+                        <option value="Case.Description">Descripción del Ticket ({{{Case.Description}}})</option>
+                    </select>
+                    <button class="btn-add" type="button" onclick="insertSelectedVar()" data-i="btn_ins_var">+ Insertar</button>
+                </div>
+                <div style="display:flex; gap: 6px;">
+                    <input id="custom_var" data-ph="ph_custom_var" placeholder="Variable personalizada (ej. Custom_Field__c)">
+                    <button class="btn-add" type="button" onclick="insertCustomVar()" data-i="btn_ins_custom">+ Insertar</button>
+                </div>
+            </div>
+
+            <!-- Card 2: Nota Importante (Callout Box) -->
+            <div class="card">
+                <h2>
+                    <span data-i="h_callout">Bloque de Nota Importante</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="callout_enable" checked onchange="updatePreview()">
+                        <span data-i="lbl_enable">Incluir bloque</span>
+                    </label>
+                </h2>
+                <div id="callout_controls">
+                    <label for="callout_title" data-i="l_callout_title">Título de la Nota</label>
+                    <input id="callout_title" value="Nota importante:">
+
+                    <label for="callout_text" data-i="l_callout_text">Texto de la Nota</label>
+                    <textarea id="callout_text" rows="2">Se recomienda que cada usuario cuente con correo electrónico corporativo individual para acceder a las aplicaciones nativas de net2phone (de lo contrario, deberán utilizarse aplicaciones de terceros).</textarea>
+                </div>
+            </div>
+
+            <!-- Card 3: Generador de Tablas (CSV / Config manual) -->
+            <div class="card">
+                <h2>
+                    <span data-i="h_table">Estructura de Tabla</span>
+                    <div style="display:flex; align-items:center; gap: 12px;">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="table_enable" checked onchange="toggleTableSection()">
+                            <span data-i="lbl_enable_tbl">Incluir tabla</span>
+                        </label>
+                    </div>
+                </h2>
+
+                <div id="table_body_section">
+                    <div style="display:flex; gap: 10px; margin-bottom: 12px; border-bottom: 1px solid var(--line); padding-bottom: 6px;">
+                        <button class="tab-btn active" id="tab_btn_manual" type="button" onclick="switchTableTab('manual')" data-i="tab_manual">Configuración Manual</button>
+                        <button class="tab-btn" id="tab_btn_csv" type="button" onclick="switchTableTab('csv')" data-i="tab_csv">Cargar desde CSV</button>
+                    </div>
+
+                    <!-- Manual Table Builder -->
+                    <div id="table_manual_sec">
+                        <div class="two-col">
+                            <div>
+                                <label for="tbl_cols" data-i="l_cols">Cantidad de Columnas</label>
+                                <input id="tbl_cols" type="number" min="1" max="6" value="3" onchange="buildManualTableInputs()">
+                            </div>
+                            <div>
+                                <label for="tbl_rows" data-i="l_rows">Filas de ejemplo</label>
+                                <input id="tbl_rows" type="number" min="1" max="10" value="2" onchange="buildManualTableInputs()">
+                            </div>
+                        </div>
+                        <div id="table_headers_container"></div>
+                    </div>
+
+                    <!-- CSV Table Builder -->
+                    <div id="table_csv_sec" style="display: none;">
+                        <label for="csv_file" data-i="l_csv_file">Seleccionar archivo CSV</label>
+                        <input id="csv_file" type="file" accept=".csv, .txt" onchange="handleCSVFile(this)">
+                        
+                        <div class="two-col" style="margin-top: 8px;">
+                            <div>
+                                <label for="csv_delim" data-i="l_delim">Delimitador</label>
+                                <select id="csv_delim" onchange="reprocessCSV()">
+                                    <option value=";" data-i="opt_semicolon">Punto y coma (;)</option>
+                                    <option value="," data-i="opt_comma">Coma (,)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="note-box" data-i="csv_note">La primera fila del archivo CSV se tomará automáticamente como encabezados de la tabla.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4: Pie de Página y Firma -->
+            <div class="card">
+                <h2 data-i="h_footer">Pie de Página & Referencia</h2>
+
+                <label for="footer_sender_name" data-i="l_sender_name">Nombre de Remitente (Firma)</label>
+                <input id="footer_sender_name" value="{{{Sender.Name}}}">
+
+                <label for="footer_sender_title" data-i="l_sender_title">Cargo / Departamento</label>
+                <input id="footer_sender_title" value="Equipo Setup Unlimited">
+
+                <div class="two-col">
+                    <div>
+                        <label for="footer_phone" data-i="l_phone">Teléfono asociado al ícono</label>
+                        <input id="footer_phone" value="54-11-53659050">
+                    </div>
+                    <div>
+                        <label for="footer_email" data-i="l_email">Correo asociado al ícono</label>
+                        <input id="footer_email" value="setupunlimited@idt.net">
+                    </div>
+                </div>
+
+                <label for="footer_ref" data-i="l_ref">Variable / Código de Referencia Final</label>
+                <input id="footer_ref" value="Ref: {{{Onboarding_Flow__c.Ticket_Number__c}}}">
+            </div>
+        </section>
+
+        <!-- RIGHT PANEL: PREVIEW & EXPORT -->
+        <section>
+            <div class="card preview-card-sticky">
+                <h2 data-i="h_prev">Vista Previa en Tiempo Real</h2>
+                
+                <div class="stage-container">
+                    <iframe id="preview_iframe" style="width: 100%; min-height: 680px; border: 0; background: #ffffff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"></iframe>
+                </div>
+
+                <button class="copy-btn" id="copy_btn" onclick="copyHTMLToClipboard()" type="button">
+                    <span data-i="btn_copy">Copiar HTML</span>
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <span data-i="rights">© 2026 net2phone. Todos los derechos reservados.</span><br>
+        <b>César Boronat</b>
+    </footer>
+
+    <script>
+        let currentLang = "es";
+        let isTableEnabled = true;
+        let tableData = {
+            headers: ["Usuario", "Extensión", "Correo Electrónico"],
+            rows: [
+                ["Ej: Juan Pérez", "1001", "juan.perez@empresa.com"],
+                ["Ej: Ana Gómez", "1002", "ana.gomez@empresa.com"]
+            ]
+        };
+        let csvContent = "";
+
+        // Diccionario completo de Idiomas y Placeholders
+        const I18N = {
+            es: {
+                app_title: "Email Template Builder",
+                h_msg: "Contenido del Correo",
+                l_salut: "Saludo inicial",
+                l_body: "Cuerpo Principal (Soporta HTML / Formato)",
+                l_sf_vars: "Insertar Variable de Salesforce (en cursor)",
+                btn_ins_var: "+ Insertar",
+                btn_ins_custom: "+ Personalizada",
+                ph_custom_var: "Variable personalizada (ej. Custom_Field__c)",
+                h_callout: "Bloque de Nota Importante",
+                lbl_enable: "Incluir bloque",
+                l_callout_title: "Título de la Nota",
+                l_callout_text: "Texto de la Nota",
+                def_callout_title: "Nota importante:",
+                def_callout_text: "Se recomienda que cada usuario cuente con correo electrónico corporativo individual para acceder a las aplicaciones nativas de net2phone (de lo contrario, deberán utilizarse aplicaciones de terceros).",
+                h_table: "Estructura de Tabla",
+                lbl_enable_tbl: "Incluir tabla",
+                tab_manual: "Configuración Manual",
+                tab_csv: "Cargar desde CSV",
+                l_cols: "Cantidad de Columnas",
+                l_rows: "Filas de ejemplo",
+                l_csv_file: "Seleccionar archivo CSV",
+                l_delim: "Delimitador",
+                opt_semicolon: "Punto y coma (;)",
+                opt_comma: "Coma (,)",
+                csv_note: "La primera fila del archivo CSV se tomará automáticamente como encabezados de la tabla.",
+                h_footer: "Pie de Página & Referencia",
+                l_sender_name: "Nombre de Remitente (Firma)",
+                l_sender_title: "Cargo / Departamento",
+                l_phone: "Teléfono asociado al ícono",
+                l_email: "Correo asociado al ícono",
+                l_ref: "Variable / Código de Referencia Final",
+                h_prev: "Vista Previa en Tiempo Real",
+                btn_copy: "Copiar HTML",
+                rights: "© 2026 net2phone. Todos los derechos reservados.",
+                copied: "✓ ¡HTML Copiado! Listo para usar",
+                fail: "Error al copiar. Copia manualmente."
+            },
+            pt: {
+                app_title: "Email Template Builder",
+                h_msg: "Conteúdo do E-mail",
+                l_salut: "Saudação inicial",
+                l_body: "Corpo Principal (Suporta HTML / Formatação)",
+                l_sf_vars: "Inserir Variável do Salesforce (no cursor)",
+                btn_ins_var: "+ Inserir",
+                btn_ins_custom: "+ Personalizada",
+                ph_custom_var: "Variável personalizada (ex. Campo_Custom__c)",
+                h_callout: "Bloco de Nota Importante",
+                lbl_enable: "Incluir bloco",
+                l_callout_title: "Título da Nota",
+                l_callout_text: "Texto da Nota",
+                def_callout_title: "Nota importante:",
+                def_callout_text: "Recomenda-se que cada usuário tenha um e-mail corporativo individual para acessar os aplicativos nativos do net2phone (caso contrário, deverão ser usados aplicativos de terceiros).",
+                h_table: "Estrutura da Tabela",
+                lbl_enable_tbl: "Incluir tabela",
+                tab_manual: "Configuração Manual",
+                tab_csv: "Carregar de CSV",
+                l_cols: "Quantidade de Colunas",
+                l_rows: "Linhas de exemplo",
+                l_csv_file: "Selecionar arquivo CSV",
+                l_delim: "Delimitador",
+                opt_semicolon: "Ponto e vírgula (;)",
+                opt_comma: "Vírgula (,)",
+                csv_note: "A primeira linha do arquivo CSV será usada automaticamente como cabeçalho.",
+                h_footer: "Rodapé & Referência",
+                l_sender_name: "Nome do Remetente (Assinatura)",
+                l_sender_title: "Cargo / Departamento",
+                l_phone: "Telefone associado ao ícone",
+                l_email: "E-mail associado ao ícone",
+                l_ref: "Variável / Código de Referência Final",
+                h_prev: "Pré-visualização em Tempo Real",
+                btn_copy: "Copiar HTML",
+                rights: "© 2026 net2phone. Todos os direitos reservados.",
+                copied: "✓ HTML Copiado! Pronto para usar",
+                fail: "Erro ao copiar."
+            },
+            en: {
+                app_title: "Email Template Builder",
+                h_msg: "Email Body Content",
+                l_salut: "Initial Greeting",
+                l_body: "Main Message Body (Supports HTML / Formatting)",
+                l_sf_vars: "Insert Salesforce Variable (at cursor)",
+                btn_ins_var: "+ Insert",
+                btn_ins_custom: "+ Custom",
+                ph_custom_var: "Custom variable (e.g. Custom_Field__c)",
+                h_callout: "Important Note Block",
+                lbl_enable: "Include block",
+                l_callout_title: "Note Title",
+                l_callout_text: "Note Content",
+                def_callout_title: "Important note:",
+                def_callout_text: "It is recommended that each user has an individual corporate email to access net2phone native applications (otherwise, third-party apps must be used).",
+                h_table: "Table Structure",
+                lbl_enable_tbl: "Include table",
+                tab_manual: "Manual Setup",
+                tab_csv: "Load from CSV",
+                l_cols: "Number of Columns",
+                l_rows: "Sample Rows",
+                l_csv_file: "Select CSV file",
+                l_delim: "Delimiter",
+                opt_semicolon: "Semicolon (;)",
+                opt_comma: "Comma (,)",
+                csv_note: "The first row in the CSV file will automatically be used as table headers.",
+                h_footer: "Footer & Reference",
+                l_sender_name: "Sender Name (Signature)",
+                l_sender_title: "Title / Department",
+                l_phone: "Phone linked to icon",
+                l_email: "Email linked to icon",
+                l_ref: "Final Reference Variable / Code",
+                h_prev: "Real-time Live Preview",
+                btn_copy: "Copy HTML",
+                rights: "© 2026 net2phone. All rights reserved.",
+                copied: "✓ HTML Copied! Ready to use",
+                fail: "Failed to copy."
+            }
+        };
+
+        const t = key => I18N[currentLang][key] || key;
+
+        function execCmd(cmd, arg = null) {
+            document.execCommand(cmd, false, arg);
+            updatePreview();
+        }
+
+        function insertVariableIntoEditor(varName) {
+            const editor = document.getElementById('editor');
+            editor.focus();
+            const varFormatted = `{{{${varName}}}}`;
+            
+            const sel = window.getSelection();
+            if (sel.getRangeAt && sel.rangeCount) {
+                let range = sel.getRangeAt(0);
+                range.deleteContents();
+                const el = document.createElement("span");
+                el.innerHTML = varFormatted;
+                range.insertNode(el);
+                
+                range.setStartAfter(el);
+                range.setEndAfter(el);
+                sel.removeAllRanges();
+                sel.addRange(range);
+            } else {
+                editor.innerHTML += varFormatted;
+            }
+            updatePreview();
+        }
+
+        function insertSelectedVar() {
+            const val = document.getElementById('var_select').value;
+            insertVariableIntoEditor(val);
+        }
+
+        function insertCustomVar() {
+            const val = document.getElementById('custom_var').value.trim();
+            if (val) {
+                insertVariableIntoEditor(val);
+                document.getElementById('custom_var').value = "";
+            }
+        }
+
+        function toggleTableSection() {
+            isTableEnabled = document.getElementById('table_enable').checked;
+            document.getElementById('table_body_section').style.display = isTableEnabled ? 'block' : 'none';
+            updatePreview();
+        }
+
+        function switchTableTab(type) {
+            document.getElementById('tab_btn_manual').classList.toggle('active', type === 'manual');
+            document.getElementById('tab_btn_csv').classList.toggle('active', type === 'csv');
+            document.getElementById('table_manual_sec').style.display = type === 'manual' ? 'block' : 'none';
+            document.getElementById('table_csv_sec').style.display = type === 'csv' ? 'block' : 'none';
+        }
+
+        function buildManualTableInputs() {
+            const cols = parseInt(document.getElementById('tbl_cols').value) || 3;
+            const rows = parseInt(document.getElementById('tbl_rows').value) || 2;
+            const container = document.getElementById('table_headers_container');
+            
+            let html = '<label style="margin-top:10px;">Nombres de Encabezados</label><div class="two-col">';
+            for (let i = 0; i < cols; i++) {
+                const defaultVal = tableData.headers[i] || `Columna ${i+1}`;
+                html += `<input id="tbl_h_${i}" value="${defaultVal}" oninput="syncManualTableData()">`;
+            }
+            html += '</div>';
+            container.innerHTML = html;
+
+            tableData.headers = [];
+            for (let i = 0; i < cols; i++) {
+                const inp = document.getElementById(`tbl_h_${i}`);
+                tableData.headers.push(inp ? inp.value : `Columna ${i+1}`);
+            }
+
+            tableData.rows = [];
+            for (let r = 0; r < rows; r++) {
+                let row = [];
+                for (let c = 0; c < cols; c++) {
+                    row.push(r === 0 ? `Ej: Dato ${c+1}` : `Dato ${c+1}`);
+                }
+                tableData.rows.push(row);
+            }
+            updatePreview();
+        }
+
+        function syncManualTableData() {
+            const cols = parseInt(document.getElementById('tbl_cols').value) || 3;
+            tableData.headers = [];
+            for (let i = 0; i < cols; i++) {
+                const inp = document.getElementById(`tbl_h_${i}`);
+                tableData.headers.push(inp ? inp.value : `Columna ${i+1}`);
+            }
+            updatePreview();
+        }
+
+        function handleCSVFile(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                csvContent = e.target.result;
+                reprocessCSV();
+            };
+            reader.readAsText(file);
+        }
+
+        function reprocessCSV() {
+            if (!csvContent) return;
+            const delim = document.getElementById('csv_delim').value;
+            const lines = csvContent.split(/\r\n|\n/).filter(l => l.trim() !== "");
+
+            if (lines.length > 0) {
+                tableData.headers = lines[0].split(delim).map(s => s.trim().replace(/^"|"$/g, ''));
+                tableData.rows = [];
+                for (let i = 1; i < lines.length; i++) {
+                    const row = lines[i].split(delim).map(s => s.trim().replace(/^"|"$/g, ''));
+                    if (row.length === tableData.headers.length) {
+                        tableData.rows.push(row);
+                    }
+                }
+                updatePreview();
+            }
+        }
+
+        function generateEmailHTML() {
+            const salutation = document.getElementById('salutation').value;
+            const bodyContent = document.getElementById('editor').innerHTML;
+            
+            const isCallout = document.getElementById('callout_enable').checked;
+            const calloutTitle = document.getElementById('callout_title').value;
+            const calloutText = document.getElementById('callout_text').value;
+
+            const senderName = document.getElementById('footer_sender_name').value;
+            const senderTitle = document.getElementById('footer_sender_title').value;
+            const phone = document.getElementById('footer_phone').value;
+            const email = document.getElementById('footer_email').value;
+            const refCode = document.getElementById('footer_ref').value;
+
+            let tableHTML = '';
+            if (isTableEnabled && tableData.headers.length > 0) {
+                let ths = tableData.headers.map(h => 
+                    `<th style="padding: 12px; text-align: left; font-size: 13px; font-weight: bold; border-bottom: 1px solid #e2e8f0; font-family: 'Open Sans', Arial, sans-serif;">${h}</th>`
+                ).join('');
+
+                let trs = tableData.rows.map((row, idx) => {
+                    let bg = idx % 2 === 0 ? '#f8fafc' : '#ffffff';
+                    let tds = row.map(cell => 
+                        `<td style="padding: 10px 12px; font-size: 13px; color: #435e72; border-bottom: 1px solid #e2e8f0; font-family: 'Open Sans', Arial, sans-serif;">${cell}</td>`
+                    ).join('');
+                    return `<tr style="background-color: ${bg};">${tds}</tr>`;
+                }).join('');
+
+                tableHTML = `
+                <table cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse: collapse; margin-bottom: 24px; border: 1px solid #e2e8f0; border-radius: 6px; overflow: hidden;">
+                    <thead>
+                        <tr style="background-color: #002540; color: #ffffff;">
+                            ${ths}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${trs}
+                    </tbody>
+                </table>`;
+            }
+
+            return `<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Template - net2phone</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f4f6f9; font-family: 'Open Sans', Arial, sans-serif; -webkit-font-smoothing: antialiased;">
+    <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #f4f6f9; padding: 20px 0;">
+        <tr>
+            <td align="center">
+                <!-- Contenedor Principal (600px ancho) -->
+                <table cellpadding="0" cellspacing="0" border="0" width="600" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; border-collapse: separate;">
+                    
+                    <!-- Header Banner Oficial -->
+                    <tr>
+                        <td align="center" style="background-color: #002540; padding: 0;">
+                            <img src="https://info.net2phone.com/hs-fs/hubfs/2026-Email-Headers/2026%20-%20net2phone%20-%20Generic%20Email%20Header%203.jpg?width=1200&upscale=true&name=2026%20-%20net2phone%20-%20Generic%20Email%20Header%203.jpg" alt="net2phone Header" width="600" style="display: block; border: 0; width: 100%; max-width: 600px; height: auto;">
+                        </td>
+                    </tr>
+
+                    <!-- Cuerpo del Mensaje con Tipografía Open Sans -->
+                    <tr>
+                        <td style="padding: 30px; color: #002540; font-size: 15px; line-height: 1.75; font-family: 'Open Sans', Arial, sans-serif;">
+                            <p style="margin-top: 0; color: #002540; font-size: 16px;"><strong>${salutation}</strong></p>
+                            
+                            <div style="color: #002540;">
+                                ${bodyContent}
+                            </div>
+
+                            <!-- Bloque Nota Importante -->
+                            ${isCallout ? `
+                            <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #f8fafc; border-radius: 6px; border-left: 4px solid #002540; margin: 20px 0;">
+                                <tr>
+                                    <td style="padding: 15px 20px;">
+                                        <p style="margin: 0; color: #435e72; font-size: 14px; line-height: 1.6; font-family: 'Open Sans', Arial, sans-serif;">
+                                            <strong>${calloutTitle}</strong>${calloutText}
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>` : ''}
+
+                            <!-- Tabla Estructurada -->
+                            ${tableHTML}
+
+                            <p style="color: #002540;">Quedo atento a sus comentarios para avanzar con su requerimiento.</p>
+                            <p style="margin-bottom: 0; color: #002540;">Saludos cordiales,</p>
+                        </td>
+                    </tr>
+
+                    <!-- Footer Oscuro #002540 -->
+                    <tr>
+                        <td align="center" style="background-color: #002540; padding: 25px 30px; text-align: center;">
+                            <img src="https://4423252.fs1.hubspotusercontent-na1.net/hubfs/4423252/Logo%20net2phone_Gradiente-1.png" alt="net2phone" width="140" style="display: block; border: 0; margin: 0 auto 12px auto;">
+                            
+                            <p style="margin: 0 0 2px 0; font-size: 14px; font-weight: bold; color: #ffffff; font-family: 'Open Sans', Arial, sans-serif;">
+                                ${senderName}
+                            </p>
+                            <p style="margin: 0 0 15px 0; font-size: 12px; font-style: italic; color: #cbd5e1; font-family: 'Open Sans', Arial, sans-serif;">
+                                ${senderTitle}
+                            </p>
+
+                            <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 15px;">
+                                <tr>
+                                    <td style="border-top: 1px solid #1e3a5f; height: 1px; font-size: 0;">&nbsp;</td>
+                                </tr>
+                            </table>
+
+                            <!-- Iconos y Links Horizontales -->
+                            <table cellpadding="0" cellspacing="0" border="0" align="center" style="margin: 0 auto 15px auto;">
+                                <tr>
+                                    <td style="padding: 0 10px; text-align: center;">
+                                        <a href="mailto:${email}" style="color: #ffffff; text-decoration: none; font-size: 12px; font-family: 'Open Sans', Arial, sans-serif;">
+                                            <img src="https://4423252.fs1.hubspotusercontent-na1.net/hubfs/4423252/Email%20Signature%202026/Email%2c%20@.svg" alt="Email" width="16" style="vertical-align: middle; border: 0;">
+                                        </a>
+                                    </td>
+                                    <td style="padding: 0 10px; text-align: center;">
+                                        <a href="tel:${phone.replace(/\D/g,'')}" style="color: #ffffff; text-decoration: none; font-size: 12px; font-family: 'Open Sans', Arial, sans-serif;">
+                                            <img src="https://4423252.fs1.hubspotusercontent-na1.net/hubfs/4423252/Email%20Signature%202026/Group.png" alt="Phone" width="16" style="vertical-align: middle; border: 0;">
+                                        </a>
+                                    </td>
+                                    <td style="padding: 0 10px; text-align: center;">
+                                        <a href="https://www.net2phone.com" style="color: #ffffff; text-decoration: none; font-size: 12px; font-family: 'Open Sans', Arial, sans-serif;">
+                                            <img src="https://4423252.fs1.hubspotusercontent-na1.net/hubfs/4423252/Email%20Signature%202026/earth-globe-modern.svg" alt="Website" width="16" style="vertical-align: middle; border: 0;">
+                                        </a>
+                                    </td>
+                                    <td style="padding: 0 10px; text-align: center;">
+                                        <a href="https://www.linkedin.com/company/net2phone" style="color: #ffffff; text-decoration: none; font-size: 12px; font-family: 'Open Sans', Arial, sans-serif;">
+                                            <img src="https://4423252.fs1.hubspotusercontent-na1.net/hubfs/4423252/Email%20Signature%202026/linkedin-line.png" alt="LinkedIn" width="16" style="vertical-align: middle; border: 0;">
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <table cellpadding="0" cellspacing="0" border="0" align="center" style="margin: 0 auto 10px auto;">
+                                <tr>
+                                    <td>
+                                        <a href="https://www.net2phone.com" style="color: #002540; text-decoration: none; font-size: 12px; font-weight: bold; white-space: nowrap; background-color: #ffffff; padding: 8px 20px; border-radius: 16px; display: inline-block; font-family: 'Open Sans', Arial, sans-serif;">Conocer más</a>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <p style="margin: 10px 0 0 0; font-size: 11px; color: #94a3b8; font-family: 'Open Sans', Arial, sans-serif;">
+                                ${refCode}
+                            </p>
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>`;
+        }
+
+        function updatePreview() {
+            const html = generateEmailHTML();
+            const iframe = document.getElementById('preview_iframe');
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            doc.open();
+            doc.write(html);
+            doc.close();
+        }
+
+        async function copyHTMLToClipboard() {
+            const html = generateEmailHTML();
+            const btn = document.getElementById('copy_btn');
+            let success = false;
+
+            try {
+                await navigator.clipboard.write([
+                    new ClipboardItem({
+                        "text/html": new Blob([html], { type: "text/html" }),
+                        "text/plain": new Blob([html], { type: "text/plain" })
+                    })
+                ]);
+                success = true;
+            } catch (err) {
+                try {
+                    const textarea = document.createElement("textarea");
+                    textarea.value = html;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    success = document.execCommand("copy");
+                    document.body.removeChild(textarea);
+                } catch (e2) {}
+            }
+
+            btn.querySelector('span').textContent = t(success ? "copied" : "fail");
+            btn.classList.toggle('ok', success);
+            setTimeout(() => {
+                btn.querySelector('span').textContent = t("btn_copy");
+                btn.classList.remove('ok');
+            }, 3000);
+        }
+
+        function applyLanguage(lang) {
+            currentLang = lang;
+            
+            // Textos generales
+            document.querySelectorAll('[data-i]').forEach(el => {
+                const key = el.getAttribute('data-i');
+                if (I18N[lang][key]) {
+                    el.textContent = I18N[lang][key];
+                }
+            });
+
+            // Placeholders
+            document.querySelectorAll('[data-ph]').forEach(el => {
+                const key = el.getAttribute('data-ph');
+                if (I18N[lang][key]) {
+                    el.placeholder = I18N[lang][key];
+                }
+            });
+
+            // Defaults si no han sido modificados
+            document.getElementById('callout_title').value = t('def_callout_title');
+            document.getElementById('callout_text').value = t('def_callout_text');
+
+            document.querySelectorAll('#lang button').forEach(b => {
+                b.classList.toggle('on', b.getAttribute('data-l') === lang);
+            });
+
+            updatePreview();
+        }
+
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme') || 
+                (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            document.getElementById('theme').textContent = next === 'dark' ? '☀ Claro' : '☾ Oscuro';
+        }
+
+        window.onload = function() {
+            buildManualTableInputs();
+
+            const inputs = ['salutation', 'callout_title', 'callout_text', 'callout_enable', 'footer_sender_name', 'footer_sender_title', 'footer_phone', 'footer_email', 'footer_ref'];
+            inputs.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.addEventListener('input', updatePreview);
+            });
+
+            document.getElementById('editor').addEventListener('input', updatePreview);
+
+            document.getElementById('theme').addEventListener('click', toggleTheme);
+            document.querySelectorAll('#lang button').forEach(b => {
+                b.addEventListener('click', () => applyLanguage(b.getAttribute('data-l')));
+            });
+
+            updatePreview();
+        };
+    </script>
+</body>
+</html>
