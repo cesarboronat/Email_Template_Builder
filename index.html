@@ -693,7 +693,7 @@
                 banner_bad: "El archivo no es una imagen válida.",
                 btn_copy_rich: "Copiar para Gmail / Outlook",
                 copied_rich: "✓ Copiado. Pegalo en Gmail u Outlook (Ctrl+V)",
-                n_copy: "“Copiar HTML” copia el código para Salesforce. “Copiar para Gmail / Outlook” copia el correo ya armado (sin el título del documento) para pegarlo directo en el redactor.",
+                n_copy: "“Copiar HTML” copia el contenido en codigo de etiquetas. “Copiar para Gmail / Outlook” copia el correo ya armado (sin el título del documento) para pegarlo directo en el redactor.",
                 copied: "✓ ¡HTML Copiado! Listo para usar",
                 fail: "Error al copiar. Copia manualmente."
             },
@@ -759,7 +759,7 @@
                 banner_bad: "O arquivo não é uma imagem válida.",
                 btn_copy_rich: "Copiar para Gmail / Outlook",
                 copied_rich: "✓ Copiado. Cole no Gmail ou Outlook (Ctrl+V)",
-                n_copy: "“Copiar HTML” copia o código para o Salesforce. “Copiar para Gmail / Outlook” copia o e-mail já montado (sem o título do documento) para colar direto no editor.",
+                n_copy: "“Copiar HTML” copia o código. “Copiar para Gmail / Outlook” copia o e-mail já montado (sem o título do documento) para colar direto no editor.",
                 copied: "✓ HTML Copiado! Pronto para usar",
                 fail: "Erro ao copiar."
             },
@@ -825,7 +825,7 @@
                 banner_bad: "The file is not a valid image.",
                 btn_copy_rich: "Copy for Gmail / Outlook",
                 copied_rich: "✓ Copied. Paste into Gmail or Outlook (Ctrl+V)",
-                n_copy: "“Copy HTML” copies the code for Salesforce. “Copy for Gmail / Outlook” copies the finished email (without the document title) to paste straight into the composer.",
+                n_copy: "“Copy HTML” copies the raw code . “Copy for Gmail / Outlook” copies the finished email (without the document title) to paste straight into the composer.",
                 copied: "✓ HTML Copied! Ready to use",
                 fail: "Failed to copy."
             }
@@ -1364,6 +1364,7 @@
                 b.addEventListener('click', () => applyLanguage(b.getAttribute('data-l')));
             });
 
+            applyLanguage(currentLang); // carga inicial: textos de todos los elementos con data-i
             updatePreview();
         };
     </script>
