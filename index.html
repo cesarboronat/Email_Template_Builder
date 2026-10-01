@@ -633,6 +633,8 @@
         const I18N = {
             es: {
                 app_title: "Email Template Builder",
+                theme_dark: "☾ Oscuro",
+                theme_light: "☀ Claro",
                 h_msg: "Contenido del Correo",
                 l_salut: "Saludo inicial",
                 l_body: "Cuerpo Principal (Soporta HTML / Formato)",
@@ -699,6 +701,8 @@
             },
             pt: {
                 app_title: "Email Template Builder",
+                theme_dark: "☾ Escuro",
+                theme_light: "☀ Claro",
                 h_msg: "Conteúdo do E-mail",
                 l_salut: "Saudação inicial",
                 l_body: "Corpo Principal (Suporta HTML / Formatação)",
@@ -765,6 +769,8 @@
             },
             en: {
                 app_title: "Email Template Builder",
+                theme_dark: "☾ Dark",
+                theme_light: "☀ Light",
                 h_msg: "Email Body Content",
                 l_salut: "Initial Greeting",
                 l_body: "Main Message Body (Supports HTML / Formatting)",
@@ -1317,6 +1323,7 @@
             });
             document.documentElement.lang = lang;
             bannerStatus();
+            updateThemeLabel();
             
 
             document.querySelectorAll('#lang button').forEach(b => {
@@ -1331,7 +1338,14 @@
                 (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
             const next = current === 'dark' ? 'light' : 'dark';
             document.documentElement.setAttribute('data-theme', next);
-            document.getElementById('theme').textContent = next === 'dark' ? '☀ Claro' : '☾ Oscuro';
+            updateThemeLabel();
+        }
+
+        // El botón muestra el tema al que se va a cambiar, en el idioma activo
+        function updateThemeLabel() {
+            const current = document.documentElement.getAttribute('data-theme') ||
+                (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            document.getElementById('theme').textContent = current === 'dark' ? t('theme_light') : t('theme_dark');
         }
 
         window.onload = function() {
